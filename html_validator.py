@@ -63,7 +63,7 @@ def _make_request(url):
     return (response, status, connection)
 
 
-def _parse_response(response, status, connection):
+def _parse_response(response, status, connection, error_ignore_regex):
     if status != 200:
         raise Exception('error %s %s' % (status, response.reason))
 
@@ -77,22 +77,27 @@ def _parse_response(response, status, connection):
     connection.close()
 
     json_output = json.loads(output)
-    # print(json_output);
     errors = [message for message in json_output['messages'] if message['type'] == u'error']
+
+    # filter out errors a user does not consider as errors
+    if error_ignore_regex:
+        errors = [error for error in errors if not error_ignore_regex.match(error['message'])]
+
     # format errors a bit
     errors = [u"Error on line {0}:{1}. {2}. HTML code: {3}".format(
         error['firstLine'] if 'firstLine' in error else error['lastLine'],
         error['firstColumn'] if 'firstColumn' in error else error['lastColumn'],
         error['message'],
         error['extract']) for error in errors]
+
     return errors
 
 
 # return error list
-def validate(url, service='https://html5.validator.nu/'):
+def validate(url, service='https://html5.validator.nu/', error_ignore_regex=None):
 
     request_url = _prepare_request(url, service)
     (response, status, connection) = _make_request(request_url)
-    result = _parse_response(response, status, connection)
+    result = _parse_response(response, status, connection, error_ignore_regex)
 
     return result
