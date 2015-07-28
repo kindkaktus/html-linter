@@ -4,6 +4,7 @@
 from __future__ import with_statement
 
 import gzip
+import json
 
 # Tackle python 2 and 3 differences
 try:
@@ -22,10 +23,8 @@ except ImportError:
     from io import BytesIO
 
 
-def _prepare_request(url, errors_only, service):
-    url = service + '?doc=' + url + '&out=text'
-    if errors_only:
-        url = url + '&level=error'
+def _prepare_request(url, service):
+    url = service + '?doc=' + url + '&out=json&level=error'
     return url
 
 
@@ -77,17 +76,22 @@ def _parse_response(response, status, connection):
 
     connection.close()
 
-    if output.find('There were errors.') != -1:
-        return {'status': False, 'error': output}
-    else:
-        return {'status': True}
+    json_output = json.loads(output)
+    # print(json_output);
+    errors = [message for message in json_output['messages'] if message['type'] == u'error']
+    # format errors a bit
+    errors = [u"Error on line {0}:{1}. {2}. HTML code: {3}".format(
+        error['firstLine'] if 'firstLine' in error else error['lastLine'],
+        error['firstColumn'] if 'firstColumn' in error else error['lastColumn'],
+        error['message'],
+        error['extract']) for error in errors]
+    return errors
 
 
-# return { status: flag
-#        [, error : error-msg ] }
-def validate(url, errors_only=False, service='https://html5.validator.nu/'):
+# return error list
+def validate(url, service='https://html5.validator.nu/'):
 
-    request_url = _prepare_request(url, errors_only, service)
+    request_url = _prepare_request(url, service)
     (response, status, connection) = _make_request(request_url)
     result = _parse_response(response, status, connection)
 
