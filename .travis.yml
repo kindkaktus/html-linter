@@ -8,5 +8,5 @@ python:
     - "nightly"
 # command to run tests
 script:
-    cd tst
-    ./test.py
+    - cd tst
+    - ./test.py
