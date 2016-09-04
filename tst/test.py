@@ -21,7 +21,7 @@ class ValidationTestCase(unittest.TestCase):
         self.assertGreater(len(errors), 0)
 
     def test_validate_bad_html_document_with_filter(self):
-        errors = validate('http://blog.tjll.net/ssh-kung-fu/', error_ignore_regex=re.compile(u"(“&” did not start a character reference|Element “(a|li)” not allowed|The “itemprop” attribute was specified).*", re.DOTALL))
+        errors = validate('http://blog.tjll.net/ssh-kung-fu/', error_ignore_regex=re.compile(u"(Bad value “only screen|“&” did not start a character reference|Element “(a|li)” not allowed|The “itemprop” attribute was specified).*", re.DOTALL))
         self.assertEquals(len(errors), 0)
 
 if __name__ == '__main__':

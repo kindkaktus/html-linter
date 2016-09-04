@@ -48,7 +48,7 @@ def _make_request(url):
             connection = httplib.HTTPConnection(parsed[1])
 
         headers = {
-            'Content-Type': 'text/html'
+            'user-agent': 'HTML Validator'
         }
         url_suffix = '%s?%s' % (parsed[2], parsed[3])
 
