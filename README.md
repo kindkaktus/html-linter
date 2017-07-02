@@ -1,7 +1,9 @@
 # HTML validator
 ============================
+
 [![Build Status](https://travis-ci.org/kindkaktus/htmlvalidator.svg?branch=master)](https://travis-ci.org/kindkaktus/htmlvalidator)
-Python front-end for external HTML validation service such as https://html5.validator.nu
+
+Python front-end for the external HTML validation service such as https://checker.html5.org/, https://html5.validator.nu or https://html5.validator.nu/
 
 Usage
 -------
