@@ -98,7 +98,7 @@ def _parse_response(response, status, connection, error_ignore_regex):
 # https://validator.w3.org/nu/
 # https://html5.validator.nu/
 # see https://github.com/validator/validator for more info
-def validate(url, service='https://checker.html5.org/', error_ignore_regex=None):
+def validate(url, service='https://html5.validator.nu/', error_ignore_regex=None):
     """ return error list """
     request_url = _prepare_request(url, service)
     (response, status, connection) = _make_request(request_url)
